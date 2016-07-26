@@ -2,7 +2,6 @@ package helpers;
 
 import helpers.diff_match_patch.Diff;
 import helpers.diff_match_patch.LinesToCharsResult;
-
 import java.util.LinkedList;
 
 import org.w3c.dom.Document;
